@@ -1,0 +1,35 @@
+from neo4j import GraphDatabase
+
+# URI examples: "neo4j://localhost", "neo4j+s://xxx.databases.neo4j.io"
+URI = "neo4j+s://5b9f7ac5.databases.neo4j.io"
+AUTH = ("<Username>", "<Password>")
+
+with GraphDatabase.driver(URI, auth=AUTH) as driver:
+    driver.verify_connectivity()
+
+
+from neo4j import GraphDatabase
+
+class MedicalKG:
+    def __init__(self, uri, user, password):
+        self.driver = GraphDatabase.driver(uri, auth=(user, password))
+        
+    def close(self):
+        self.driver.close()
+        
+    def get_diseases_by_symptoms(self, symptoms):
+        with self.driver.session() as session:
+            query = """
+            MATCH (s:Symptom)-[:INDICATES]->(d:Disease)
+            WHERE s.name IN $symptoms
+            RETURN d.name AS disease, count(*) AS match_count
+            ORDER BY match_count DESC
+            """
+            result = session.run(query, symptoms=symptoms)
+            return [record["disease"] for record in result]
+
+# Usage
+kg = MedicalKG("bolt://localhost:7687", "neo4j", "your_password")
+diseases = kg.get_diseases_by_symptoms(["Fever", "Joint Pain"])
+print("Possible diseases:", diseases)
+kg.close()
