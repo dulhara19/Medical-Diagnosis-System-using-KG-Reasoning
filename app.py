@@ -68,5 +68,4 @@ for disease in diseases:
     print(f"  Treatments: {treatments}")
     print(f"  Required Tests: {tests}")
 
-
 kg.close()
