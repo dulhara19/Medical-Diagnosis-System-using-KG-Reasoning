@@ -30,11 +30,25 @@ class MedicalKG:
             query = """
             MATCH (s:Symptom)-[:INDICATES]->(d:Disease)
             WHERE s.name IN $symptoms
-            RETURN d.name AS disease, count(*) AS match_count
-            ORDER BY match_count DESC
+             WITH d, count(s) AS matchedSymptoms
+            MATCH (d)<-[:INDICATES]-(allSymptoms:Symptom)
+            WITH d.name AS disease, matchedSymptoms, count(allSymptoms) AS totalSymptoms
+            RETURN disease, matchedSymptoms, totalSymptoms,
+               toFloat(matchedSymptoms) / totalSymptoms AS confidence
+            ORDER BY confidence DESC
             """
             result = session.run(query, symptoms=symptoms)
-            return [record["disease"] for record in result]
+            return [
+                {
+                    "disease": record["disease"],
+                    "confidence": round(record["confidence"] * 100, 2),  # in %
+                    "matched": record["matchedSymptoms"],
+                    "total": record["totalSymptoms"]
+                 }
+            for record in result
+                ]
+
+        
     def get_treatments_by_disease(self, disease):
         with self.driver.session() as session:
             query = """
