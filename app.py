@@ -1,8 +1,8 @@
 from neo4j import GraphDatabase
 
 # URI examples: "neo4j://localhost", "neo4j+s://xxx.databases.neo4j.io"
-URI = "neo4j+s://5b9f7ac5.databases.neo4j.io"
-AUTH = ("<Username>", "<Password>")
+URI = "bolt://localhost:7687"
+AUTH = ("neo4j", "medicaldata")
 
 with GraphDatabase.driver(URI, auth=AUTH) as driver:
     driver.verify_connectivity()
@@ -29,7 +29,7 @@ class MedicalKG:
             return [record["disease"] for record in result]
 
 # Usage
-kg = MedicalKG("bolt://localhost:7687", "neo4j", "your_password")
+kg = MedicalKG("bolt://localhost:7687", "neo4j", "medicaldata")
 diseases = kg.get_diseases_by_symptoms(["Fever", "Joint Pain"])
 print("Possible diseases:", diseases)
 kg.close()
