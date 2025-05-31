@@ -2,7 +2,7 @@ import requests
 import json
 
 user_input = input("Enter something: ")
-promt = "according this user input: " + user_input + ", what are the symptomps? Please answer in comma seperated words, no explanation needed and dont give chain of thoughts as well. If you don't know, just say 'unknown'."
+promt = "according this user input: " + user_input + ", what are the symptomps? finally, just summarize identified symptoms in coma saperated sentence, no explanation needed and dont give chain of thoughts as well. If you don't know, just say 'unknown'."
 
 url = 'http://localhost:11434/api/generate'
 headers = {'Content-Type': 'application/json'}
