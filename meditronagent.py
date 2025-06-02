@@ -46,9 +46,7 @@ User: "{user_input}"
 if user asks diseases related questions along with the query like, 
 
 User: "What are the symptoms of the common cold?"
-
 User: "What causes the seasonal flu?"
-
 User:"What medication would be prescribed for a headache?"
 
 add <disease></>
