@@ -32,7 +32,7 @@ User: "My mom has been coughing non-stop and her fever won’t go down."
 User: "I feel tired all the time and have trouble concentrating."
 → Output: The patient reports fatigue and difficulty concentrating.
 
-- when User gives a long statement according to the given       instructions put the Output in <final_answer> tags and do not   print anything else.
+- when User gives a long statement according to the given instructions put the Output in <final_answer> tags and do not   print anything else.
 
 give the final answer after thinking must be in the format as follows: 
 <final_answer>
