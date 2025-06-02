@@ -32,7 +32,7 @@ User: "My mom has been coughing non-stop and her fever won’t go down."
 User: "I feel tired all the time and have trouble concentrating."
 → Output: The patient reports fatigue and difficulty concentrating.
 
-- when User gives a long statement according to the given       instructions put the Output in <final_answer> tags and do not   print anything else.
+- when User gives a long statement according to the given instructions put the Output in <final_answer> tags and do not   print anything else.
 
 give the final answer after thinking must be in the format as follows: 
 <final_answer>
@@ -42,7 +42,20 @@ give the final answer after thinking must be in the format as follows:
 Now simplify the following statement:
 User: "{user_input}"
 → Output:" 
+
+if user asks diseases related questions along with the query like, 
+
+User: "What are the symptoms of the common cold?"
+
+User: "What causes the seasonal flu?"
+
+User:"What medication would be prescribed for a headache?"
+
+add <disease></>
+
 """
+
+
 
 url = 'http://localhost:11434/api/generate'
 headers = {'Content-Type': 'application/json'}
