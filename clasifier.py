@@ -73,6 +73,8 @@ def info_question_agent(user_input):
         # Here you would call your Meditron model or any other LLM to get the answer
         # For now, we just simulate a response
     print(f"🧠 Answering info: '{answer}'")
+    answer= answer.json().get("response", "")
+    print(f"🧠 Final Answer: {answer}")
 
 
         
