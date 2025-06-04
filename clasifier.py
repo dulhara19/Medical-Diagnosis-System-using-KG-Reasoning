@@ -64,7 +64,7 @@ match = re.search(r"<final_answer>\s*(.*?)\s*</final_answer>", raw_output, re.DO
 
 
 
-# --------- AGENT FUNCTIONS -------
+# --------- AGENT FUNCTIONS --------- 
 def info_question_agent(user_input):
     print("\n🤖 [INFO AGENT]: Answering factual medical question...")
     
@@ -72,7 +72,7 @@ def info_question_agent(user_input):
     print(f"🔍 Processing info question: '{user_input}'")
         # Here you would call your Meditron model or any other LLM to get the answer
         # For now, we just simulate a response
-    print(f"🧠 Answering info: '{answer}'")
+    print(answer)
     
 
 

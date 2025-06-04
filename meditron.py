@@ -27,4 +27,4 @@ def calling_meditron(user_input):
     return answer
 
 # answer = calling_meditron("what is dry cough")
-# print(answer.json())
+# print(answer)
