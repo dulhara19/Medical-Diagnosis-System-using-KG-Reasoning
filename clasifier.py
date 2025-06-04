@@ -1,7 +1,7 @@
 import requests
 import json
 import re
-
+from meditron import calling_meditron 
 # Step 1: User input
 user_input = input(" Enter your medical question or story: ")
 
@@ -41,7 +41,7 @@ Now classify this input:
 """
 
 # Step 3: Send request to LLM
-url = 'http://localhost:11434/api/generate'
+url = 'http://localhost:11435/api/generate'
 headers = {'Content-Type': 'application/json'}
 data = {
     'model': 'deepseek-r1:8b',
@@ -61,9 +61,54 @@ print("\n📦 Raw LLM Output:\n", raw_output)
 # Step 5: Extract <final_answer>
 match = re.search(r"<final_answer>\s*(.*?)\s*</final_answer>", raw_output, re.DOTALL | re.IGNORECASE)
 
+
+
+
+# --------- AGENT FUNCTIONS ---------
+def info_question_agent(user_input):
+    print("\n🤖 [INFO AGENT]: Answering factual medical question...")
+    
+    answer = calling_meditron(user_input)
+    print(f"🔍 Processing info question: '{user_input}'")
+        # Here you would call your Meditron model or any other LLM to get the answer
+        # For now, we just simulate a response
+    print(f"🧠 Answering info: '{answer}'")
+
+
+        
+
+
+def symptom_story_agent(user_input):
+    print("\n🧬 [SYMPTOM AGENT]: Understanding symptoms and reasoning...")
+    # Your logic to do symptom extraction, NER, call KG, etc.
+    print(f"🩺 Diagnosing from: '{user_input}'")
+
+
+def hybrid_agent(user_input):
+    print("\n🔀 [HYBRID AGENT]: Handling both symptom story and question...")
+    # You can call both agents or do smarter hybrid logic
+    info_question_agent(user_input)
+    symptom_story_agent(user_input)
+
+
+
+
+
 if match:
     final_answer = match.group(1).strip()
     print("\n✅ Final Answer Extracted:")
     print(final_answer)
+
+# --------- ROUTING TO AGENTS ---------
+    if final_answer == "info_question":
+        info_question_agent(user_input)
+    elif final_answer == "symptom_story":
+        symptom_story_agent(user_input)
+    elif final_answer == "hybrid":
+        hybrid_agent(user_input)
+    else:
+        print("⚠️ Unknown classification.")
 else:
-    print("\n❌ No <final_answer> tag found in the response. Check LLM output and ensure tags are present.")
+    print("\n❌ No <final_answer> tag found in the response.")
+
+
