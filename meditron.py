@@ -14,7 +14,7 @@ def calling_meditron(user_input):
     prompt = user_input
 
 
-    url = 'http://localhost:11435/api/generate'
+    url = 'http://localhost:11433/api/generate'
     headers = {'Content-Type': 'application/json'}
     data = {
     'model': 'meditron:7b-q6_K',
@@ -25,4 +25,5 @@ def calling_meditron(user_input):
     response = requests.post(url, headers=headers, data=json.dumps(data))
     return response 
 
-calling_meditron("what is dry cough")
+answer = calling_meditron("what is dry cough")
+print(answer.json())
