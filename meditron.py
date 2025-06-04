@@ -23,7 +23,8 @@ def calling_meditron(user_input):
     }
 
     response = requests.post(url, headers=headers, data=json.dumps(data))
-    return response 
+    answer=response.json().get("response", "")
+    return answer
 
 # answer = calling_meditron("what is dry cough")
 # print(answer.json())
