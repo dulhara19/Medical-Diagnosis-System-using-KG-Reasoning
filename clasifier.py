@@ -1,7 +1,22 @@
 import requests
 import json
 import re
+import os
+from dotenv import load_dotenv
 from meditron import calling_meditron 
+from llmagent import calling_llmagent
+from neragent import calling_neragent
+from app import MedicalKG
+
+# Load env vars from .env file
+load_dotenv()
+
+# Read the variables
+URI = os.getenv("NEO4J_URI")
+USER = os.getenv("NEO4J_USER")
+PASSWORD = os.getenv("NEO4J_PASSWORD")
+
+
 # Step 1: User input
 user_input = input(" Enter your medical question or story: ")
 
@@ -75,14 +90,17 @@ def info_question_agent(user_input):
     print(answer)
     
 
-
-        
-
-
 def symptom_story_agent(user_input):
     print("\n🧬 [SYMPTOM AGENT]: Understanding symptoms and reasoning...")
-    # Your logic to do symptom extraction, NER, call KG, etc.
+    answer=calling_llmagent(user_input)
+    entities=calling_neragent(answer)
+    # ✅ Create instance of MedicalKG before calling the method
+    kg = MedicalKG(uri="bolt://localhost:7687", user="neo4j", password=PASSWORD)
+    
+    dis = kg.get_diseases_by_symptoms(entities)
     print(f"🩺 Diagnosing from: '{user_input}'")
+    print(f"💡 Extracted entities: {entities}")
+    print(f"🔬 possible diseas: {dis}")
 
 
 def hybrid_agent(user_input):

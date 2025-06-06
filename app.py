@@ -1,5 +1,6 @@
 from neo4j import GraphDatabase
 from dotenv import load_dotenv
+# from neragent import extract_symptoms_ner   
 import os
 
 # Load env vars from .env file
@@ -68,18 +69,18 @@ class MedicalKG:
             return [record["test"] for record in result]
     
 
-# Usage
+# # Usage
 kg = MedicalKG(URI, USER, PASSWORD)
-diseases = kg.get_diseases_by_symptoms(["Fever", "Joint Pain"])
+diseases = kg.get_diseases_by_symptoms(['flu', 'fever', 'cough'])
 print("Possible diseases:", diseases)
 
-diseases = kg.get_diseases_by_symptoms(["Fever", "Joint Pain"])
+# diseases = kg.get_diseases_by_symptoms(["Fever", "Joint Pain"])
 
-for disease in diseases:
-    treatments = kg.get_treatments_by_disease(disease)
-    tests = kg.get_tests_by_disease(disease)
-    print(f"\nDisease: {disease}")
-    print(f"  Treatments: {treatments}")
-    print(f"  Required Tests: {tests}")
+# for disease in diseases:
+#     treatments = kg.get_treatments_by_disease(disease)
+#     tests = kg.get_tests_by_disease(disease)
+#     print(f"\nDisease: {disease}")
+#     print(f"  Treatments: {treatments}")
+#     print(f"  Required Tests: {tests}")
 
-kg.close()
+# kg.close()

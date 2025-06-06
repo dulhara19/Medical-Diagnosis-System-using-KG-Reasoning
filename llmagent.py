@@ -4,8 +4,8 @@ import re
 import subprocess
 # from neragent import extract_symptoms_ner
 
-user_input = input("Enter something: ")
-prompt = f"""
+def calling_llmagent(user_input):
+  prompt = f"""
 You are a professional medical assistant. Your job is to analyze user queries related to health symptoms and rewrite them clearly and medically for further processing.
 
 Instructions:
@@ -72,28 +72,29 @@ User: "{user_input}"
 """
 
 
-url = 'http://localhost:11435/api/generate'
-headers = {'Content-Type': 'application/json'}
-data = {
+  url = 'http://localhost:11435/api/generate'
+  headers = {'Content-Type': 'application/json'}
+  data = {
     'model': 'deepseek-r1:8b',
     'prompt': prompt,
     'stream': False,  # not streaming
-}
+  }
 
-response = requests.post(url, headers=headers, data=json.dumps(data))
+  response = requests.post(url, headers=headers, data=json.dumps(data))
 
 
 # Get and print final answer from <final_answer> tags
-result = response.json()
-raw_output = result.get("response", "")
+  result = response.json()
+  raw_output = result.get("response", "")
 
-match = re.search(r"<final_answer>\s*(.*?)\s*</final_answer>", raw_output, re.DOTALL | re.IGNORECASE)
-if match:
-    final_answer = match.group(1).strip()
-    print("\n✅ Final Answer Extracted:")
-    print(final_answer)
-else:
-    print("\n❌ No <final_answer> tag found in the response.")
+  match = re.search(r"<final_answer>\s*(.*?)\s*</final_answer>", raw_output, re.DOTALL | re.IGNORECASE)
+  if match:
+      final_answer = match.group(1).strip()
+      print("\n✅ Final Answer Extracted:")
+      print(final_answer)
+      return final_answer
+  else:
+      print("\n❌ No <final_answer> tag found in the response.")
 
 
 #----start----from here i try to send data throuhgh subprocess to the other env and run the script because currently i had issue with the import of neragent.py in this env, so i am trying to run it through subprocess and send the final_answer to it. just because i needed to use scispacy library in my current python version but it didnt support it, so i created another env with python 3.10 and installed the required packages there. now i am trying to run the neragent.py script in that env using subprocess and send the final_answer to it. lets keep this as a temporary solution until i find a better way to handle this.-------------
