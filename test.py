@@ -88,7 +88,7 @@ Now analyze the following input and extract the structured information using the
 """
 
 
-  url = 'http://localhost:11435/api/generate'
+  url = 'http://localhost:11434/api/generate'
   headers = {'Content-Type': 'application/json'}
   data = {
     'model': 'deepseek-r1:8b',
