@@ -6,30 +6,71 @@ import re
 
 def calling_hybridAgent(user_input):
   prompt = f"""
-You are a helpful assistant specialized in understanding user inputs in medical contexts. A user may input a hybrid sentence that includes both:
+You are a smart medical language analyzer.
 
-1. A **symptom story** (describing patient symptoms over time), and  
-2. A **direct medical question** (asking for a definition or explanation, like "What is dry cough?").
+Users may input a hybrid sentence that includes:
+1. A <story>: symptom description about the patient, their health history, or how they feel.
+2. A <direct>: specific question asking for information (e.g., “What is dry cough?”).
 
-🎯 Your task is to extract and classify the input into these two parts using the following format:
+🧠 Your task:
+- Identify and classify each part clearly inside these tags:
+  - <story> ... </story>
+  - <direct> ... </direct>
+- If the input only contains a story, leave <direct> empty.
+- If it only contains a direct question, leave <story> empty.
 
-{
-  "symptom_story": "<Extracted story content describing the symptoms>",
-  "question": "<Extracted direct question if any, or leave empty if not present>"
-}
+Format your response like this:
+<story>...</story>
+<direct>...</direct>
 
-🧠 Make sure:
-- The symptom story includes anything related to physical/mental symptoms, their timing, and changes.
-- The question part includes only the actual question being asked.
+---
 
-📥 Example input:
-"Patient has a headache and fever, but no other symptoms. But he was having muscle pain yesterday. Dizzy and vomiting as well. He was also having a runny nose and sore throat last week. He has been feeling fatigued for the past few days, but no other symptoms are present. Also my head was hurting a lot. What is dry cough?"
+📥 Example 1:
+"Patient has headache and dizziness. Also had vomiting last night. What is meningitis?"
 
-📤 Expected output:
-{
-  "symptom_story": "Patient has a headache and fever, but no other symptoms. But he was having muscle pain yesterday. Dizzy and vomiting as well. He was also having a runny nose and sore throat last week. He has been feeling fatigued for the past few days, but no other symptoms are present. Also my head was hurting a lot.",
-  "question": "What is dry cough?"
-}
+📤 Output:
+<story>Patient has headache and dizziness. Also had vomiting last night.</story>  
+<direct>What is meningitis?</direct>
+
+---
+
+📥 Example 2:
+"My son has had fever and chills for three days. He also developed body pain and a rash today. Is it dengue or something else?"
+
+📤 Output:
+<story>My son has had fever and chills for three days. He also developed body pain and a rash today.</story>  
+<direct>Is it dengue or something else?</direct>
+
+---
+
+📥 Example 3:
+"What are the symptoms of tuberculosis?"
+
+📤 Output:
+<story></story>  
+<direct>What are the symptoms of tuberculosis?</direct>
+
+---
+
+📥 Example 4:
+"I feel really weak lately, and I keep having joint pain. My appetite is very low and I get tired quickly."
+
+📤 Output:
+<story>I feel really weak lately, and I keep having joint pain. My appetite is very low and I get tired quickly.</story>  
+<direct></direct>
+
+---
+
+📥 Example 5:
+"Patient has a headache and fever, but no other symptoms. He was having muscle pain yesterday. Dizzy and vomiting as well. He was also having a runny nose and sore throat last week. Feeling fatigued for the past few days. What is dry cough?"
+
+📤 Output:
+<story>Patient has a headache and fever, but no other symptoms. He was having muscle pain yesterday. Dizzy and vomiting as well. He was also having a runny nose and sore throat last week. Feeling fatigued for the past few days.</story>  
+<direct>What is dry cough?</direct>
+
+---
+
+Now analyze the following input and classify it using the same format:
 
 """
 
