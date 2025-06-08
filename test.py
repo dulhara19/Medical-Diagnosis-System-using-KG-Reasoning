@@ -84,7 +84,7 @@ Format your output as a JSON object:
 ---
 
 Now analyze the following input and extract the structured information using the same format:
-
+{user_input}
 """
 
 
