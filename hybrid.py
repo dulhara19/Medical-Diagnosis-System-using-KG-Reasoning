@@ -1,3 +1,8 @@
+# from neragent import extract_symptoms_ner
+
+# nswer=extract_symptoms_ner("Patient has a headache and fever, but no other symptoms.but he was having muscle pain yesteray. dizzy and vomiting as well. He was also having a runny nose and sore throat last week. He has been feeling fatigued for the past few days, but no other symptoms are present.also my head was hurting a lot")
+
+
 import requests
 import json
 import re
@@ -6,76 +11,160 @@ import re
 
 def calling_hybridAgent(user_input):
   prompt = f"""
-You are a smart medical language analyzer.
+You are a medical language understanding agent.
 
-Users may input a hybrid sentence that includes:
-1. A <story>: symptom description about the patient, their health history, or how they feel.
-2. A <direct>: specific question asking for information (e.g., “What is dry cough?”).
+Your job is to carefully read a user's input and extract structured information in the following categories:
 
-🧠 Your task:
-- Identify and classify each part clearly inside these tags:
-  - <story> ... </story>
-  - <direct> ... </direct>
-- If the input only contains a story, leave <direct> empty.
-- If it only contains a direct question, leave <story> empty.
+1. symptoms: all health issues mentioned (e.g., headache, fever, fatigue)
+2. time_periods: durations or references to time (e.g., "since yesterday", "for the past week")
+3. direct_questions: any explicit questions the user is asking (e.g., "What is dry cough?")
+4. subject: who is experiencing the symptoms (e.g., "my son", "I", "the patient")
 
-Format your response like this:
-<story>...</story>
-<direct>...</direct>
+Format your output as a JSON object.
+
+⚠️ Important: Wrap the final output JSON inside <final_answer>...</final_answer> tags.
+
+Example format:
+
+<final_answer>
+{{
+  "subject": "...",
+  "symptoms": [...],
+  "time_periods": [...],
+  "direct_questions": [...]
+}}
+</final_answer>
 
 ---
 
 📥 Example 1:
-"Patient has headache and dizziness. Also had vomiting last night. What is meningitis?"
+"I’ve been feeling dizzy and had a sore throat for two days. What is pharyngitis?"
 
 📤 Output:
-<story>Patient has headache and dizziness. Also had vomiting last night.</story>  
-<direct>What is meningitis?</direct>
+<final_answer>
+{{
+  "subject": "I",
+  "symptoms": ["dizzy", "sore throat"],
+  "time_periods": ["for two days"],
+  "direct_questions": ["What is pharyngitis?"]
+}}
+</final_answer>
 
 ---
 
 📥 Example 2:
-"My son has had fever and chills for three days. He also developed body pain and a rash today. Is it dengue or something else?"
+"My brother has had chills, fever, and a dry cough since last Friday. Is it COVID?"
 
 📤 Output:
-<story>My son has had fever and chills for three days. He also developed body pain and a rash today.</story>  
-<direct>Is it dengue or something else?</direct>
+<final_answer>
+{{
+  "subject": "my brother",
+  "symptoms": ["chills", "fever", "dry cough"],
+  "time_periods": ["since last Friday"],
+  "direct_questions": ["Is it COVID?"]
+}}
+</final_answer>
 
 ---
 
 📥 Example 3:
-"What are the symptoms of tuberculosis?"
+"I was vomiting yesterday and had muscle cramps. I’m also really weak today."
 
 📤 Output:
-<story></story>  
-<direct>What are the symptoms of tuberculosis?</direct>
+<final_answer>
+{{
+  "subject": "I",
+  "symptoms": ["vomiting", "muscle cramps", "weak"],
+  "time_periods": ["yesterday", "today"],
+  "direct_questions": []
+}}
+</final_answer>
 
 ---
 
 📥 Example 4:
-"I feel really weak lately, and I keep having joint pain. My appetite is very low and I get tired quickly."
+"The patient had joint pain last week and is now experiencing fatigue. What test is recommended?"
 
 📤 Output:
-<story>I feel really weak lately, and I keep having joint pain. My appetite is very low and I get tired quickly.</story>  
-<direct></direct>
+<final_answer>
+{{
+  "subject": "the patient",
+  "symptoms": ["joint pain", "fatigue"],
+  "time_periods": ["last week", "now"],
+  "direct_questions": ["What test is recommended?"]
+}}
+</final_answer>
 
 ---
 
 📥 Example 5:
-"Patient has a headache and fever, but no other symptoms. He was having muscle pain yesterday. Dizzy and vomiting as well. He was also having a runny nose and sore throat last week. Feeling fatigued for the past few days. What is dry cough?"
+"My son has been coughing badly for three days, and now he’s also got a fever. Should I be worried?"
 
 📤 Output:
-<story>Patient has a headache and fever, but no other symptoms. He was having muscle pain yesterday. Dizzy and vomiting as well. He was also having a runny nose and sore throat last week. Feeling fatigued for the past few days.</story>  
-<direct>What is dry cough?</direct>
+<final_answer>
+{{
+  "subject": "my son",
+  "symptoms": ["coughing", "fever"],
+  "time_periods": ["for three days", "now"],
+  "direct_questions": ["Should I be worried?"]
+}}
+</final_answer>
 
 ---
 
-Now analyze the following input and classify it using the same format:
+📥 Example 6:
+"I was sneezing a lot this morning and now my nose won’t stop running. What could this mean?"
 
+📤 Output:
+<final_answer>
+{{
+  "subject": "I",
+  "symptoms": ["sneezing", "runny nose"],
+  "time_periods": ["this morning", "now"],
+  "direct_questions": ["What could this mean?"]
+}}
+</final_answer>
+
+---
+
+📥 Example 7:
+"My grandma has been complaining of back pain and dizziness for the past few days."
+
+📤 Output:
+<final_answer>
+{{
+  "subject": "my grandma",
+  "symptoms": ["back pain", "dizziness"],
+  "time_periods": ["for the past few days"],
+  "direct_questions": []
+}}
+</final_answer>
+
+---
+
+📥 Example 8:
+"Feeling exhausted all the time. I also get lightheaded if I stand too quickly. What’s going on?"
+
+📤 Output:
+<final_answer>
+{{
+  "subject": "I",
+  "symptoms": ["exhausted", "lightheaded"],
+  "time_periods": ["all the time", "if I stand too quickly"],
+  "direct_questions": ["What’s going on?"]
+}}
+</final_answer>
+
+---
+
+Now analyze the following input and extract the structured information using the same format:
+
+{user_input}
 """
 
 
-  url = 'http://localhost:11435/api/generate'
+
+  url = 'http://localhost:11434/api/generate'
   headers = {'Content-Type': 'application/json'}
   data = {
     'model': 'deepseek-r1:8b',
@@ -100,14 +189,4 @@ Now analyze the following input and classify it using the same format:
       print("\n❌ No <final_answer> tag found in the response.")
 
 
-#----start----from here i try to send data throuhgh subprocess to the other env and run the script because currently i had issue with the import of neragent.py in this env, so i am trying to run it through subprocess and send the final_answer to it. just because i needed to use scispacy library in my current python version but it didnt support it, so i created another env with python 3.10 and installed the required packages there. now i am trying to run the neragent.py script in that env using subprocess and send the final_answer to it. lets keep this as a temporary solution until i find a better way to handle this.-------------
-
-# # Activate the other env and run the script
-# process = subprocess.run(
-#     ['C:/AI-projects/Medical Diagnosis - KG Reasoning/venv310/Scripts/python.exe',
-#      'C:/AI-projects/Medical Diagnosis - KG Reasoning/neragent.py',
-#      final_answer],
-#     capture_output=True,
-#     text=True
-# )
-#----------end---------------
+calling_hybridAgent("Patient has a headache and fever, but no other symptoms.but he was having muscle pain yesteray. dizzy and vomiting as well. He was also having a runny nose and sore throat last week. He has been feeling fatigued for the past few days, but no other symptoms are present.also my head was hurting a lot")
