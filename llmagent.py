@@ -1,7 +1,7 @@
 import requests
 import json
 import re
-
+from llmconnector import llmconnector
 import subprocess
 # from neragent import extract_symptoms_ner
 
@@ -71,12 +71,8 @@ User: "It's hard to explain, but my legs feel tingly and I get random muscle twi
 Now simplify the following statement:
 User: "{user_input}"
 """
-
-
-
-  response = requests.post(url, headers=headers, data=json.dumps(data))
-
-
+  response=llmconnector(prompt)
+  
 # Get and print final answer from <final_answer> tags
   result = response.json()
   raw_output = result.get("response", "")
