@@ -3,6 +3,7 @@ import json
 import re
 import os
 from dotenv import load_dotenv
+from llmconnector import llmconnector
 from meditron import calling_meditron 
 from llmagent import calling_llmagent
 from neragent import calling_neragent
@@ -56,15 +57,8 @@ Now classify this input:
 """
 
 # Step 3: Send request to LLM
-url = 'http://localhost:11435/api/generate'
-headers = {'Content-Type': 'application/json'}
-data = {
-    'model': 'deepseek-r1:8b',
-    'prompt': prompt,
-    'stream': False,  # Not using streaming
-}
+response=llmconnector(prompt)
 
-response = requests.post(url, headers=headers, data=json.dumps(data))
 
 # Step 4: Parse and extract classification
 result = response.json()

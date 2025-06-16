@@ -2,7 +2,7 @@ import requests
 import json
 
 
-def connector(prompt):
+def llmconnector(prompt):
     url = 'http://localhost:11434/api/generate'
     headers = {'Content-Type': 'application/json'}
     data = {
