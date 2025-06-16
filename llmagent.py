@@ -1,6 +1,7 @@
 import requests
 import json
 import re
+
 import subprocess
 # from neragent import extract_symptoms_ner
 
@@ -72,13 +73,6 @@ User: "{user_input}"
 """
 
 
-  url = 'http://localhost:11435/api/generate'
-  headers = {'Content-Type': 'application/json'}
-  data = {
-    'model': 'deepseek-r1:8b',
-    'prompt': prompt,
-    'stream': False,  # not streaming
-  }
 
   response = requests.post(url, headers=headers, data=json.dumps(data))
 
