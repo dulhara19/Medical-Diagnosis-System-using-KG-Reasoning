@@ -14,16 +14,6 @@ def calling_neragent(text):
     return symptoms
 
 
-# if __name__ == "__main__":
-#     symptom_text = sys.argv[1]
-#     symptoms = extract_symptoms_ner(symptom_text)
-#     print("::, ".join(symptoms))  # Output as plain string for capture
-
-# diagnosis_pipeline.py
-
-
-
-
 
 
 # answer=calling_neragent("The patient reports fatigue and difficulty concentrating")
