@@ -1,7 +1,6 @@
 import requests
 import json
 
-
 def llmconnector(prompt):
     url = 'http://localhost:11434/api/generate'
     headers = {'Content-Type': 'application/json'}
